@@ -1,0 +1,115 @@
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/itsdalmo/ami-resource/manager"
+	"github.com/itsdalmo/ami-resource/models"
+	"io/ioutil"
+	"log"
+	"os"
+	"path"
+)
+
+func main() {
+	var request models.GetRequest
+	if err := json.NewDecoder(os.Stdin).Decode(&request); err != nil {
+		log.Fatalf("failed to unmarshal request: %s", err)
+	}
+
+	if len(os.Args) < 2 {
+		log.Fatalf("missing arguments")
+	}
+	outputDir := os.Args[1]
+
+	response, err := Run(request, outputDir)
+	if err != nil {
+		log.Fatalf("get failed: %s", err)
+	}
+
+	if err := json.NewEncoder(os.Stdout).Encode(response); err != nil {
+		log.Fatalf("failed to marshal response: %s", err)
+	}
+}
+
+// Run (business logic)
+func Run(request models.GetRequest, outputDir string) (models.GetResponse, error) {
+	var response models.GetResponse
+
+	if err := request.Source.Validate(); err != nil {
+		return response, fmt.Errorf("invalid configuration: %s", err)
+	}
+
+	// Get image information
+	manager, err := manager.New(request.Source)
+	if err != nil {
+		return response, fmt.Errorf("failed to create manager: %s", err)
+	}
+	images, err := manager.DescribeImages([]*ec2.Filter{
+		{
+			Name:   aws.String("image-id"),
+			Values: []*string{aws.String(request.Version.ImageID)},
+		},
+	})
+	if err != nil {
+		return response, err
+	}
+	if len(images) == 0 {
+		return response, fmt.Errorf("image not found: %s", request.Version.ImageID)
+	}
+	image := images[0]
+
+	// Write image id
+	imageID := aws.StringValue(image.ImageId)
+	if err := ioutil.WriteFile(path.Join(outputDir, "id"), []byte(imageID), 0644); err != nil {
+		return response, fmt.Errorf("failed to write image id: %s", err)
+	}
+
+	// Write packer json
+	packerJSON, err := json.Marshal(models.GetPackerJSON{SourceAMI: imageID})
+	if err != nil {
+		return response, fmt.Errorf("failed to marshal packer json: %s", err)
+	}
+	if err := ioutil.WriteFile(path.Join(outputDir, "packer.json"), packerJSON, 0644); err != nil {
+		return response, fmt.Errorf("failed to write packer json: %s", err)
+	}
+
+	// Return the response
+	response.Version = models.Version{ImageID: imageID}
+	response.Metadata = imageMetadata(image)
+
+	return response, nil
+}
+
+func imageMetadata(image *ec2.Image) []models.Metadata {
+	var m []models.Metadata
+
+	m = append(m, models.Metadata{
+		Name:  "Name",
+		Value: aws.StringValue(image.Name),
+	})
+
+	m = append(m, models.Metadata{
+		Name:  "OwnerId",
+		Value: aws.StringValue(image.OwnerId),
+	})
+
+	m = append(m, models.Metadata{
+		Name:  "CreationDate",
+		Value: aws.StringValue(image.CreationDate),
+	})
+
+	m = append(m, models.Metadata{
+		Name:  "VirtualizationType",
+		Value: aws.StringValue(image.VirtualizationType),
+	})
+
+	m = append(m, models.Metadata{
+		Name:  "RootDeviceType",
+		Value: aws.StringValue(image.RootDeviceType),
+	})
+
+	return m
+}
