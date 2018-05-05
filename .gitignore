@@ -1,3 +1,4 @@
-in
-out
-check
+# Binaries
+./in
+./out
+./check

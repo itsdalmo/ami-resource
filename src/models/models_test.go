@@ -2,7 +2,7 @@ package models_test
 
 import (
 	"encoding/json"
-	"github.com/itsdalmo/ami-resource/models"
+	"github.com/itsdalmo/ami-resource/src/models"
 	"reflect"
 	"strings"
 	"testing"

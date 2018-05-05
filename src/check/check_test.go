@@ -1,14 +1,14 @@
-package main_test
+package check_test
 
 import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
-	"github.com/itsdalmo/ami-resource/cmd/check"
+	"github.com/itsdalmo/ami-resource/src/check"
 	"testing"
 )
 
 func TestNewVersions(t *testing.T) {
-	images := main.Images([]*ec2.Image{
+	images := check.Images([]*ec2.Image{
 		{
 			ImageId:      aws.String("ami-00000001"),
 			CreationDate: aws.String("2018-04-18T11:34:03.000Z"),
@@ -27,7 +27,7 @@ func TestNewVersions(t *testing.T) {
 		previous := ""
 		expected := []string{"ami-00000001"}
 
-		actual := main.NewVersions(images, previous)
+		actual := check.NewVersions(images, previous)
 
 		if len(actual) != len(expected) {
 			t.Errorf("length of expected and actual does not match")
@@ -44,7 +44,7 @@ func TestNewVersions(t *testing.T) {
 		previous := "ami-00000001"
 		expected := []string{"ami-00000001"}
 
-		actual := main.NewVersions(images, previous)
+		actual := check.NewVersions(images, previous)
 
 		if len(actual) != len(expected) {
 			t.Errorf("length of expected and actual does not match")
@@ -63,7 +63,7 @@ func TestNewVersions(t *testing.T) {
 			"ami-00000001",
 		}
 
-		actual := main.NewVersions(images, previous)
+		actual := check.NewVersions(images, previous)
 
 		if len(actual) != len(expected) {
 			t.Errorf("length of expected and actual does not match")
