@@ -87,27 +87,27 @@ func imageMetadata(image *ec2.Image) []models.Metadata {
 	var m []models.Metadata
 
 	m = append(m, models.Metadata{
-		Name:  "Name",
+		Name:  "name",
 		Value: aws.StringValue(image.Name),
 	})
 
 	m = append(m, models.Metadata{
-		Name:  "OwnerId",
+		Name:  "owner_id",
 		Value: aws.StringValue(image.OwnerId),
 	})
 
 	m = append(m, models.Metadata{
-		Name:  "CreationDate",
+		Name:  "creation_date",
 		Value: aws.StringValue(image.CreationDate),
 	})
 
 	m = append(m, models.Metadata{
-		Name:  "VirtualizationType",
+		Name:  "virtualization_type",
 		Value: aws.StringValue(image.VirtualizationType),
 	})
 
 	m = append(m, models.Metadata{
-		Name:  "RootDeviceType",
+		Name:  "root_device_type",
 		Value: aws.StringValue(image.RootDeviceType),
 	})
 
