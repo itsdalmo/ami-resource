@@ -35,7 +35,7 @@ type Metadata struct {
 
 // Version for the resource.
 type Version struct {
-	ImageID string `json:"imageId"`
+	ImageID string `json:"ami"`
 }
 
 // CheckRequest ...
