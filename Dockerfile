@@ -6,7 +6,7 @@ ENV TARGET linux
 ENV ARCH amd64
 RUN make build
 
-FROM alpine:edge as resource
+FROM alpine:latest as resource
 COPY --from=builder /go/src/github.com/itsdalmo/ami-resource/check /opt/resource/check
 COPY --from=builder /go/src/github.com/itsdalmo/ami-resource/in /opt/resource/in
 COPY --from=builder /go/src/github.com/itsdalmo/ami-resource/out /opt/resource/out
