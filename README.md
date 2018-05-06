@@ -28,7 +28,7 @@ Fetches additional metadata about the AMI, in addition to two files:
 
 #### `put`
 
-Not implemented.
+Not implemented. Use the [packer-resource](https://github.com/itsdalmo/packer-resource) instead.
 
 ## Example
 
