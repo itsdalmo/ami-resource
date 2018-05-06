@@ -24,7 +24,7 @@ Searches the provided region for AMIs that match the configured filters. Version
 Fetches additional metadata about the AMI, in addition to two files:
 
 - `id`: Plain text file with the AMI ID.
-- `packer`: Packer friendly variable file: `{"source_ami": "<ami-id>"}`.
+- `packer.json`: Packer friendly variable file: `{"source_ami": "<ami-id>"}`.
 
 #### `put`
 
