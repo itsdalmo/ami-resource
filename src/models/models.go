@@ -24,9 +24,6 @@ func (s *Source) Validate() error {
 	if s.AWSRegion == "" {
 		return errors.New("aws_region must be set")
 	}
-	if len(s.Filters) == 0 {
-		return errors.New("one or more filters must be set")
-	}
 	return nil
 }
 

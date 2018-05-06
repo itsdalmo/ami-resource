@@ -1,6 +1,7 @@
 package check
 
 import (
+	"errors"
 	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
@@ -16,6 +17,9 @@ func Run(request models.CheckRequest) (models.CheckResponse, error) {
 
 	if err := request.Source.Validate(); err != nil {
 		return response, fmt.Errorf("invalid configuration: %s", err)
+	}
+	if len(request.Source.Filters) == 0 {
+		return response, errors.New("invalid configuration: one or more filters must be set")
 	}
 
 	// List images
