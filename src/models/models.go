@@ -15,14 +15,17 @@ type Source struct {
 
 // Validate the source configuration.
 func (s *Source) Validate() error {
-	if len(s.Filters) == 0 {
-		return errors.New("one or more filters must be set")
-	}
 	if s.AWSAccessKeyID == "" {
 		return errors.New("aws_access_key_id must be set")
 	}
 	if s.AWSSecretAccessKey == "" {
 		return errors.New("aws_secret_access_key must be set")
+	}
+	if s.AWSRegion == "" {
+		return errors.New("aws_region must be set")
+	}
+	if len(s.Filters) == 0 {
+		return errors.New("one or more filters must be set")
 	}
 	return nil
 }
