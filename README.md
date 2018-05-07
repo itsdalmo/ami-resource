@@ -1,4 +1,4 @@
-##  AMI resource (work in progress)
+##  AMI resource
 
 Concourse resource for AWS AMIs that is very much based on
 [this resource](https://github.com/jdub/ami-resource) by the same name. A 
